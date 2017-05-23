@@ -85,6 +85,7 @@ def main():
         norm_gene_tags=["transposase","mobile element"]
         for locustag in locus:
                 locus_description=locus[locustag].lower()
+                
                 if norm_gene_tags[0] in locus_description or norm_gene_tags[1] in locus_description:
                         g.write(locustag+"\n")
         g.close()
