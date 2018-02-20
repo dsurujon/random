@@ -30,7 +30,7 @@ def main():
     for thisfeature in mystrain.features:
         if thisfeature.type=="CDS":
             try:
-                thisline = ["" for i in range(0,9)]
+                thisline = ["-" for i in range(0,9)]
                 thisline[0] = thisfeature.qualifiers['product'][0]
                 thisline[1] = str(thisfeature.location.start)
                 thisline[2] = str(thisfeature.location.end)
