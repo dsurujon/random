@@ -62,7 +62,9 @@ def main():
     mdict = make_map_dict(infile)
 
     # add occupied ta sites to the master list
-    for tasite in mdict:
+	tasites = list(mdict.keys())
+	tasites.sort()
+    for tasite in tasites:
         try:
             ta_table[tasite] = mdict[tasite]
         except KeyError:
