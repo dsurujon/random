@@ -9,15 +9,15 @@ from optparse import OptionParser
 import re
 
 
-options = OptionParser(usage='%prog input output',
-                       description="Specify input directory and output file")
+options = OptionParser(usage='%prog -g refgenome -i input -o output',
+                       description="Specify reference genome, input map file and output file")
 
 options.add_option("-g","--genome",dest="genomefile",
                    help="genome file (.gbk)")
 options.add_option("-i","--infile",dest="inputfile",
                    help="input map file (.map)")
 options.add_option("-o","--outfile",dest="outputfile",
-                   help="output file (.prot_table)")
+                   help="output file (.wig)")
 
 
 def make_map_dict(mapfilename):
