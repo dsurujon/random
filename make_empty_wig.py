@@ -60,7 +60,7 @@ def main():
     outfile = opts.outputfile
     # get all TA sites
     mystrain=SeqIO.read(genomefile,"genbank")
-    ta_table, downstream, upstream, ta_sites = get_ta(mystrain[:100000])
+    ta_table, downstream, upstream, ta_sites = get_ta(mystrain)
     
     print("Total number of TA sites: ", len(ta_table))
     repsRE = get_repeats_RE(upstream, downstream, ta_sites)
