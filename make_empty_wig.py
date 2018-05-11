@@ -21,7 +21,7 @@ options.add_option("-g","--genome",dest="genomefile",
                    help="genome file (.gbk)")
 
 options.add_option("-o","--outfile",dest="outputfile",
-                   help="output file (.prot_table)")
+                   help="output file (.wig)")
 
 
 
