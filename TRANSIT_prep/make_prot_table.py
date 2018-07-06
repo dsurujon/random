@@ -32,8 +32,8 @@ def main():
             try:
                 thisline = ["-" for i in range(0,9)]
                 thisline[0] = thisfeature.qualifiers['product'][0]
-                thisline[1] = str(thisfeature.location.start)
-                thisline[2] = str(thisfeature.location.end)
+                thisline[1] = str(int(thisfeature.location.start))
+                thisline[2] = str(int(thisfeature.location.end))
                 thisline[3] = stranddict[thisfeature.location.strand]
                 thisline[4] = int(abs(thisfeature.location.end-thisfeature.location.start)/3)
                 thisline[8] = thisfeature.qualifiers['locus_tag'][0]
