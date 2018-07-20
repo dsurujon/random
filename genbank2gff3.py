@@ -65,15 +65,18 @@ def main():
     outputdir = opts.outputdir
 
     gbkfiles = os.listdir(inputdir)
+    gbkfiles = [g for g in gbkfiles if g[-4:]==".gbk"]
 
     for infile in gbkfiles:
         print("processing ", infile)
         
-        fullinputfile = os.path.join(inputdir, infile)
-        outfile = '.'.join(infile.split('.')[:-1])+".gff"
-        fulloutputfile = os.path.join(outputdir, outfile)
+        try:
+        	fullinputfile = os.path.join(inputdir, infile)
+        	outfile = '.'.join(infile.split('.')[:-1])+".gff"
+        	fulloutputfile = os.path.join(outputdir, outfile)
 
-        make_gff_from_gbk(fullinputfile, fulloutputfile)
+        	make_gff_from_gbk(fullinputfile, fulloutputfile)
+        except OverflowError: pass
         
 
 
