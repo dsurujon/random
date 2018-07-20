@@ -34,7 +34,7 @@ def make_gff_from_gbk(infile, outfile):
                 thisline = ["." for i in range(0,9)]
                 thisline[0] = strainID
                 thisline[3] = str(int(thisfeature.location.start)+1)
-                thisline[4] = str(int(thisfeature.location.end)+1)
+                thisline[4] = str(int(thisfeature.location.end))
                 thisline[6] = stranddict[thisfeature.location.strand]
                 thisline[2] = "CDS"
                 thisline[7] = "0"
