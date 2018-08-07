@@ -33,7 +33,7 @@ def get_genome(inputfile):
         startloc = int(splitline[3])
         endloc = int(splitline[4])
         featstrand = stranddict[splitline[6]]
-        locustag = splitline[8].split('.')[1]
+        locustag = splitline[8].split('=')[1]
         thisfeature = SeqFeature(FeatureLocation(start=startloc, end=endloc, strand = featstrand),
                                  type=splitline[2],
                                  qualifiers = {'locus_tag':[locustag]})
