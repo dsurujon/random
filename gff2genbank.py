@@ -19,7 +19,7 @@ options.add_option("-i","--indir",dest="inputdir",
 options.add_option("-o","--outdir",dest="outputdir",
                    help="output directory of genbank files")
 
-myfile = "D:\\defne\\Documents\\BC\\TVO\\clustering\\GFF20_TESTS\\DS-00-000-0.gff"
+stranddict = {'+':1, '-':-1}
 
 def get_genome(inputfile):
     with open(inputfile) as f:
@@ -32,9 +32,9 @@ def get_genome(inputfile):
         splitline = lines[i].split()
         startloc = int(splitline[3])
         endloc = int(splitline[4])
-        strand = splitline[6]
+        featstrand = stranddict[splitline[6]]
         locustag = splitline[8].split('.')[1]
-        thisfeature = SeqFeature(FeatureLocation(start=startloc, end=endloc),
+        thisfeature = SeqFeature(FeatureLocation(start=startloc, end=endloc, strand = featstrand),
                                  type=splitline[2],
                                  qualifiers = {'locus_tag':[locustag]})
         genome_features.append(thisfeature)
@@ -50,6 +50,12 @@ def make_gbk_from_gff(infile, outfile):
     myseq = Seq.Seq(g_seq, IUPAC.unambiguous_dna)
     myrecord = SeqRecord(myseq, id = g_id, name = g_id)
     for feature in g_features:
+        feature.qualifiers['transl_table']=[11]
+        if feature.location.strand == 1:
+            aaseq = myseq[feature.location.start-1:feature.location.end-1].translate()
+        else:
+            aaseq = myseq[feature.location.start-1:feature.location.end-1].reverse_complement().translate()
+        feature.qualifiers['translation']=[str(aaseq)]
         myrecord.features.append(feature)
     SeqIO.write(myrecord, outfile, 'genbank')
 
