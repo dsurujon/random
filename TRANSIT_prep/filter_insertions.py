@@ -12,7 +12,7 @@ options = OptionParser(usage='%prog -i [input dir] -k [number of reads]',
 
 
 options.add_option("-i","--infile",dest="inputdir",
-                   help="input map file (.map)")
+                   help="input directory containing .wig files")
 options.add_option("-k","--kmin",dest="kmin",
                    help="minimum number of reads")
 
