@@ -10,7 +10,12 @@ import re
 
 
 options = OptionParser(usage='%prog -i [input(empty) wig file] -m [input map] -o [output wig file]',
-                       description="Specify empty wig file, input map file, and output wig file")
+                       description=
+                       """
+Specify empty wig file, input map file, and output wig file.
+Add the option "--old" to specify the old format for map files
+(e.g. output of bowtie 1).
+                         """)
 
 
 options.add_option("-i","--infile",dest="wigfile",
@@ -19,7 +24,8 @@ options.add_option("-m","--map",dest="mapfile",
                    help="input .map file")
 options.add_option("-o","--outfile",dest="outputfile",
                    help="output .wig file")
-
+options.add_option("--old", dest = "oldmap",
+                   action="store_true", default = False)
 
 def make_map_dict(mapfilename):
     mapdict = {}
@@ -41,7 +47,27 @@ def make_map_dict(mapfilename):
             mapdict[thispos] = thiscount
     return(mapdict)
 
-def populate_wig_file(wigfile,infile,outfile):
+def make_oldmap_dict(mapfilename):
+    mapdict = {}
+    f = open(mapfilename)
+    flines = f.readlines()
+    f.close()
+    for i in flines:
+        linelist = i.split()
+        thiscount = int(linelist[0].split('-')[1])
+        thisstrand = linelist[1]
+        thispos = int(linelist[3])
+        thislen = len(linelist[5])
+        if thisstrand == "+":
+            thispos += thislen - 2
+        
+        if thispos in mapdict:
+            mapdict[thispos] += thiscount
+        else:
+            mapdict[thispos] = thiscount
+    return(mapdict)
+
+def populate_wig_file(wigfile,infile,outfile,isold):
     # get all TA sites
     f=open(wigfile)
     lines=[line.split() for line in f.readlines()]
@@ -49,7 +75,12 @@ def populate_wig_file(wigfile,infile,outfile):
     ta_table = {int(line[0]):0 for line in lines[1:]}
 
     # get occupied TA sited
-    mdict = make_map_dict(infile)
+    if isold:
+        mdict = make_oldmap_dict(infile)
+    else:
+        mdict = make_map_dict(infile)
+
+    
     print("Total number of TA sites: ", len(ta_table))
     print("Number of occupied TA sites: ",len(mdict))
     # add occupied ta sites to the master list
@@ -101,8 +132,9 @@ def main():
     wigfilename = opts.wigfile
     mapfilename = opts.mapfile
     outfilename = opts.outputfile
+    isold = opts.oldmap
 
-    populate_wig_file(wigfilename,mapfilename,outfilename)
+    populate_wig_file(wigfilename,mapfilename,outfilename,isold)
 
 
 if __name__ == '__main__':
