@@ -43,7 +43,7 @@ options.add_option("-l","--lcut",dest="lowercutoff",
 options.add_option("-u","--ucut",dest="uppercutoff",
                    help="higher cutoff for mutation frequency between [0,100]")
 options.add_option("-o","--outfile",dest="outputfile",
-                   help="output file (.map)")
+                   help="output file (.csv)")
 
 
 #read gd file, return a list of lines that have specific types of
@@ -75,6 +75,7 @@ def reformat_gd(filename, reference):
          'To': pd.Series(tont),
          'Frequency': pd.Series(frequency)}
     df = pd.DataFrame(d)
+    df=df[['From','Position','To','Frequency']]
     return(df)
 
 #merge dataframes from all population files
@@ -113,8 +114,8 @@ def make_ctrl_comparison(mydf,cdmdf,fc_low,fc_high,fl,filename):
     mergedf = cdmdf.merge(mydf, how="outer", on=["From","To","Position"],suffixes=[".CTRL",""])
     mergedf = mergedf.drop_duplicates()
     mergedf = mergedf.fillna(0)
-    cdmcols = [col for col in mergedf.columns if 'CTRL' in col and 'Frequency' in col]
-    exptcols = [col for col in mergedf.columns if 'CTRL' not in col and 'Frequency' in col]
+    cdmcols = [col for col in mergedf.columns if 'CTRL' in col]
+    exptcols = [col for col in mergedf.columns if 'EXPT' in col]
     df_sub=mergedf[(mergedf[cdmcols]<fc_low).all(axis=1) & (mergedf[exptcols]>fc_high).any(axis=1)]
     #df_sub=df_sub[(df_sub[exptcols]>fc_high).sum(axis=1)>1]
     df_multi=get_locus_tags(df_sub,fl)
@@ -148,8 +149,10 @@ def main():
     
     # Control data frame for mutation frequencies
     ctrlDF=make_merged_FT(ctrls,strain).drop_duplicates()
+    ctrlDF.rename(columns=lambda x: x.replace('Frequency', 'CTRL'), inplace=True)
     # Experiment data frame for mutation frequencies
     exptDF=make_merged_FT(expts,strain).drop_duplicates()
+    exptDF.rename(columns=lambda x: x.replace('Frequency', 'EXPT'), inplace=True)
     print('Done reading gd files')
 
     ## generate a feature dictionary for the reference genome
