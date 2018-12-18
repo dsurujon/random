@@ -31,11 +31,11 @@ Use the flag ```--old``` to retrieve old locus tags instead of new ones.
 ## Filter background mutations
 
 Filter population mutations by comparing against adaptation experiments done in CDM (control for background mutations).
-Retain only mutations that are present in one condition.
+Retain only mutations that are present in the experimental condition.
 
 The experiment sheet provides a list of gd files to be analyzed. It has two columns labeled "File" and "Group". The entries under file should correspond to the .gd file names (.gd extension included), and Group could be either "E" (experimental) or "C" (control).
 
-The genbenk reference genome is used for adding locus tags to mutations if they appear in a gene. 
+The genbank reference genome is used for adding locus tags to mutations if they appear in a gene. 
 
 The filtering is done by keeping all mutations that satisfy the following two conditions:
 1. The control populations do not have >(lower cutoff) frequency
