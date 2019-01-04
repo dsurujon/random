@@ -47,35 +47,39 @@ options.add_option("-o","--outfile",dest="outputfile",
 
 
 #read gd file, return a list of lines that have specific types of
-#mutations (eg. "SNP") with 
+#mutations (eg. "SNP")  
 def reformat_gd(filename, reference):
     f = open(filename)
     lines = [l.split() for l in f.readlines()]
     f.close()
 
     relevantlines = []
-    relevantmutations = ["SNP","INS","DEL"]
+    relevantmutations = ["SNP","SUB","INS","DEL","MOB","AMP","CON","INV"]
 
+    type=[]
     pos=[]
     fromnt=[]
     tont=[]
     frequency=[]
     for line in lines:
-        if line[0] in relevantmutations:
+        mut_type = line[0]
+        if mut_type in relevantmutations:
             try:
-                frequency.append(float(line[6].split('=')[1])*100)
+                frequency.append(float(line[-1].split('=')[1])*100)
             except ValueError:
                 frequency.append(0)
             p=int(line[4])
+            type.append(mut_type)
             pos.append(p)
             fromnt.append(reference.seq[p-1])
             tont.append(line[5])
     d = {'Position': pd.Series(pos),
          'From': pd.Series(fromnt),
          'To': pd.Series(tont),
+         'Type': pd.Series(type),
          'Frequency': pd.Series(frequency)}
     df = pd.DataFrame(d)
-    df=df[['From','Position','To','Frequency']]
+    df=df[['From','Position','To','Type','Frequency']]
     return(df)
 
 #merge dataframes from all population files
@@ -85,7 +89,7 @@ def make_merged_FT(filenames,reference):
     for i in range(1,numfiles):
         print('reading ', filenames[i])
         suf="."+str(i+1)
-        dfmerge=dfmerge.merge(reformat_gd(filenames[i],reference),how="outer", on=["Position","From","To"], suffixes=["",suf])
+        dfmerge=dfmerge.merge(reformat_gd(filenames[i],reference),how="outer", on=["Position","From","To","Type"], suffixes=["",suf])
     return(dfmerge)
 
 
