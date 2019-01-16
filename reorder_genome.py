@@ -29,12 +29,13 @@ def reorder_gbk(infile, outfile):
         try:
             if feature.type == "CDS" and feature.qualifiers['gene'][0]=='dnaA':
                 startloc = feature.location.nofuzzy_start
+                endloc = feature.location.nofuzzy_end
                 strand = feature.location.strand
         except KeyError: pass
     if strand == 1:
         newseq = strainseq[startloc:] + strainseq[:startloc]
     else:
-        newseq = strainseq[:startloc].reverse_complement() + strainseq[startloc:].reverse_complement()
+        newseq = strainseq[:endloc].reverse_complement() + strainseq[endloc:].reverse_complement()
     newrecord = SeqRecord(newseq, id = strainID)
     with open(outfile, 'w') as f:
         SeqIO.write(newrecord, f, 'fasta')
