@@ -35,7 +35,7 @@ def main():
 	inputdir = opts.inputdir
 	k = int(opts.kmin)
 	os.chdir(inputdir)
-	wigfiles = os.listdir()
+	wigfiles = os.listdir('./')
 	for wigfile in wigfiles:
 		print(wigfile)
 		if wigfile[-4:]==".wig":
