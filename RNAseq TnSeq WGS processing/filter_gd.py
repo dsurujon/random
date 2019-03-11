@@ -65,7 +65,11 @@ def reformat_gd(filename, reference):
         mut_type = line[0]
         if mut_type in relevantmutations:
             try:
-                frequency.append(float(line[-1].split('=')[1])*100)
+            ## if mut_type is INS, need to get line[6]
+                if mut_type=="INS":
+                    frequency.append(float(line[6].split('=')[1])*100)
+                else:
+                    frequency.append(float(line[-1].split('=')[1])*100)
             except ValueError:
                 frequency.append(0)
             p=int(line[4])
