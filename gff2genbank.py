@@ -9,6 +9,7 @@ from Bio.SeqFeature import SeqFeature, FeatureLocation
 from optparse import OptionParser
 import re
 import os
+import copy
 
 
 options = OptionParser(usage='%prog -i [inputdir] -o [outputdir]',
@@ -49,6 +50,8 @@ def make_gbk_from_gff(infile, outfile):
     g_id, g_seq, g_features = get_genome(infile)
     myseq = Seq.Seq(g_seq, IUPAC.unambiguous_dna)
     myrecord = SeqRecord(myseq, id = g_id, name = g_id)
+    f1 = SeqFeature(FeatureLocation(0, len(myseq)), type="source")
+    myrecord.features.append(f1)
     for feature in g_features:
         feature.qualifiers['transl_table']=[11]
         if feature.location.strand == 1:
@@ -56,6 +59,14 @@ def make_gbk_from_gff(infile, outfile):
         else:
             aaseq = myseq[feature.location.start-1:feature.location.end-1].reverse_complement().translate()
         feature.qualifiers['translation']=[str(aaseq)]
+        feature.type="CDS"
+        feature.qualifiers['product'] = feature.qualifiers['locus_tag']
+        
+        genefeature = copy.deepcopy(feature)
+        genefeature.type = 'gene'
+        genefeature.qualifiers = {'locus_tag':feature.qualifiers['locus_tag']}
+        
+        myrecord.features.append(genefeature)
         myrecord.features.append(feature)
     SeqIO.write(myrecord, outfile, 'genbank')
 
@@ -73,6 +84,7 @@ def main():
         try:
         	fullinputfile = os.path.join(inputdir, infile)
         	outfile = '.'.join(infile.split('.')[:-1])+".gbk"
+        	outfile = outfile.replace('-', '_')
         	fulloutputfile = os.path.join(outputdir, outfile)
 
         	make_gbk_from_gff(fullinputfile, fulloutputfile)
