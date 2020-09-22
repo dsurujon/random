@@ -48,3 +48,18 @@ python filter_gd.py -i testdir -s Filter_Kan.csv -g NC_012469.gbk -o testout_10_
 Required packages: 
 ```pandas```
 ```Biopython```
+    
+----------------
+## Merge RNAseq files and add annotation
+
+Merge all DESeq2 output files within a given directory, and add functional annotation data to generate one `.csv` file. 
+
+Example usage:     
+```
+Rscript merge_RNAseq.R [inputdirectory] [outputfilename] [annotationfilename]    
+Rscript merge_RNAseq.R /home/juanceom/RNASeqmerger/jasonr120 jason120_merged.csv Annotation_3Strains_Cleaned.csv
+```
+
+The input directory may contain other types of files, but only those with a `.csv` extension will be included.     
+In the final merged file, `log2FoldChange` and `padj`are included, and named as `[inputfilename].l2FC` or `[inputfilename].padj` respectively
+
